@@ -1,3 +1,6 @@
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +23,10 @@ public class WordleGame {
     public static final String ANSI_GREEN = "\u001b[32m";
     public static final String ANSI_BLACK = "\u001b[30m";
     public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_CYAN = "\033[4;36m";
+    
     public static final String ANSI_WHITE = "\u001b[37m";
-
+    
 
     private InputStream getFileAsIOStream(final String fileName) 
     {
@@ -45,7 +50,7 @@ public class WordleGame {
 			
 			File file = new File("../WordleSolver/wordle-answers-alphabetical.txt");
 			InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
-
+			
 			
 			//File directory = new File("./");
 			// System.out.println(directory.getAbsolutePath());
@@ -101,7 +106,7 @@ public class WordleGame {
 			System.out.println("Guess: ");
 			
 			
-			currentGuess = jo.next();
+			currentGuess = jo.next().replaceAll("[^a-z]","");
 			Path pathy = Path.of("wordle-allowed-guesses.txt");
 			Path pathy2 = Path.of("wordle-answers-alphabetical.txt");
 
@@ -121,7 +126,7 @@ public class WordleGame {
 			while(currentGuess.length()!=5)
 			{
 				System.out.println("Make sure it's 5 letters long.");
-				currentGuess = jo.next();
+				currentGuess = jo.next().replaceAll("[^a-z]","");
 			}
 			
 			if (currentGuess.equals(answer))
@@ -175,6 +180,16 @@ public class WordleGame {
 			
 		}
 		jo.close();
+		ASCIIArt artGen = new ASCIIArt();
+        
+        System.out.println(ANSI_GREEN);
+        try {
+			artGen.printTextArt("Thanks", ASCIIArt.ART_SIZE_MEDIUM);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        System.out.println();
 	}
 	
 	 public static List<Character>
