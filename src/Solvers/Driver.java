@@ -4,7 +4,11 @@ import java.util.LinkedHashMap;
 
 public class Driver {
 
-	public static void main(String[] args) throws Exception
+	/**
+	 * @param args unused
+	 * Driver of our solvers. Can be easily configured to run any of the 4 solvers.
+	 */
+	public static void main(String[] args)
 	{
 		
 		int count = 0;
@@ -19,8 +23,8 @@ public class Driver {
 		for (int x = 0; x<runs; x++)
 		{
 			solver.problem.answer = solver.problem.getAnAnswer(x);
-		    solver.answer = solver.problem.getAnswer();
-		    System.out.println("REEREE ANSWER IS " + solver.answer);
+			solver.answer = solver.problem.getAnswer();
+			System.out.println("REEREE ANSWER IS " + solver.answer);
 			System.out.println(x);
 			int d = solver.go();
 			corpus.put(solver.answer, d);

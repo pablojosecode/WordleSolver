@@ -19,42 +19,34 @@ import java.util.stream.Collectors;
 
 import javax.print.DocFlavor.URL;
 
+/**
+ * @author Pablo Hansen
+ * Self-contained Wordle game!
+ */
 public class WordleGame {
+	
+	/*
+	 * ANSI codes we will use to print colors to command-line.
+	 */
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_GREEN = "\u001b[32m";
     public static final String ANSI_BLACK = "\u001b[30m";
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_CYAN = "\033[4;36m";
-    
     public static final String ANSI_WHITE = "\u001b[37m";
-    
-
-    private InputStream getFileAsIOStream(final String fileName) 
-    {
-        InputStream ioStream = this.getClass()
-            .getClassLoader()
-            .getResourceAsStream(fileName);
-        
-        if (ioStream == null) {
-            throw new IllegalArgumentException(fileName + " is not found");
-        }
-        return ioStream;
-    }
+   
 
 
     
     
+	/**
+	 * @return We generate a random answer from the text file of acceptable answers.
+	 */
 	public String getAnAnswer()
 	{
 		String randomWord="";
-		try{
-			
-			File file = new File("../WordleSolver/wordle-answers-alphabetical.txt");
-			InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
-			
-			
-			//File directory = new File("./");
-			// System.out.println(directory.getAbsolutePath());
+		try (InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
+){
 			
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		    String line = reader.readLine();
@@ -78,6 +70,10 @@ public class WordleGame {
 	}
 	
 	
+	/**
+	 * @param args unused
+	 * Driver of our Wordle game
+	 */
 	public static void main(String[] args)
 	{
 		WordleGame jope = new WordleGame();
@@ -88,6 +84,8 @@ public class WordleGame {
 		System.out.println("BEGIN PLAYING");
 		
 		String  answer = jope.getAnAnswer();
+		
+		//default answer
 		if (answer.equals(""))
 		{
 			answer = "pilot";
@@ -98,7 +96,7 @@ public class WordleGame {
 		
 		
 		
-		System.out.println("answer is *****");// + answer);
+		System.out.println("answer is *****");
 		boolean notSolved = true;
 		Scanner jo = new Scanner(System.in);
 		
@@ -193,23 +191,14 @@ public class WordleGame {
         System.out.println();
 	}
 	
-	 public static List<Character>
+	 /**
+	 * @param str The string we want to convert.
+	 * @return A char array representing the original string
+	 */
+	public static List<Character>
 	    convertStringToCharList(String str)
 	    {
-	  
-	      // Create an empty List of character
-	      List<Character> chars = str
-	  
-	      // Convert to String to IntStream
-	      .chars()
-	  
-	      // Convert IntStream to Stream<Character>
-	      .mapToObj(e -> (char)e)
-	  
-	      // Collect the elements as a List Of Characters
-	      .collect(Collectors.toList());
-	  
-	      // return the List
+	      List<Character> chars = str.chars().mapToObj(e -> (char)e).collect(Collectors.toList());
 	      return chars;
 	    }
 

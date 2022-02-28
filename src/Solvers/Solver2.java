@@ -15,6 +15,10 @@ public class Solver2 {
 	public String answer;
 
 	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public int go() throws Exception
 	{
 		String answer = "";
