@@ -1,67 +1,39 @@
+package Solvers;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Solver {
+public class Solver2 {
 	
 	public HashMap<Integer, Character> spec = new HashMap<Integer, Character>();
     public ArrayList<Character> nowhere = new ArrayList<Character>();
     public ArrayList<Character> somewhere = new ArrayList<Character>();
     public HashMap<Integer, Character> notHere = new HashMap<>();
 	public Problem problem = new Problem();
+	public String answer;
 
-	/**
-	 * @param args unused
-	 * @throws Exception
-	 */
-	public static void main(String[] args)
-	{
-		int count = 0;
-		int tot = 0;
-		int smalls = 0;
-		int[] put = new int[15];
-		double total = 0;
-		double runs = 1;
-		
-		for (int x = 0; x<runs; x++)
-		{
-			System.out.println(runs-x);
-			int d = go();
-			total +=d;
-			put[d]++;
-		}
-		for (int x = 1; x<put.length; x++)
-		{
-			System.out.println(x + " " + put[x]);
-		}
-		System.out.println("Average of " + (double)total/runs + " guesses.");
-	}
 	
-	public static int go()
+	public int go() throws Exception
 	{
 		String answer = "";
 		
 		boolean first = true;
-		InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		
+		
 
 	    ArrayList<String> wordsleft = new ArrayList<>();
-	    String line;
-		try {
-			line = reader.readLine();
-			while (line != null) { 
-		    	wordsleft.add(line); 
-		    	line = reader.readLine(); 
-		    }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
+
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+	    String line = reader.readLine();
+	    while (line != null) { 
+	    	wordsleft.add(line); 
+	    	line = reader.readLine(); 
+	    }
 	    
-	    Solver solver = new Solver();
 	    boolean notDone = true;
 	    int totalCount = 0;
 	    while (notDone)
@@ -70,6 +42,11 @@ public class Solver {
 	    	if (wordsleft.size()==0)
 	    	{	
 	    		System.out.println("SMALL");
+	    		return -1;
+	    	}
+	    	if (wordsleft.size()==0)
+	    	{
+	    		String ans = wordsleft.get(0);
 	    		return -1;
 	    	}
 	    	
@@ -81,38 +58,74 @@ public class Solver {
 	    	}
 	    	else
 	    	{
-		    	for (String possible: wordsleft)
+	    		int d = -1;
+		    	for (String jo: wordsleft)
 		    	{
-		    		double min = 100000000;
-		    		double now = solver.getLeft(possible, wordsleft);
-		    		if (min>now)
+		    		int count = 0;
+		    		for (String words: wordsleft)
 		    		{
-		    			min = now;
-		    			guess = possible;
+		    			count += narrow(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
+		    		}
+		    		
+		    		if (count>d)
+		    		{
+		    			d = count;
+		    			guess = jo;
 		    		}
 		    	}
 	    	}
 	    	
-	    	
-		    String response = solver.guess(guess);
+	    	System.out.println("Best Guess " + guess);
+		    System.out.println("Answer " + problem.getAnswer());
+		    
+		    System.out.println("Size: " + wordsleft.size());
+		    String response = guess(guess);
+		    System.out.println("Reponse " + response);
+		    
+		   //
+		    
+		    
 		    
 		    if (response.equals("ggggg"))
 		    {
 		    	return totalCount;
 		    }
+		    
+		    
+		    
+		    inputData(response, guess);
+		    
+		    wordsleft.removeIf(x -> nonconform(x));
+		  
+		    empty();
 			wordsleft.remove(guess);
-		    
-		    
-		    solver.inputData(response, guess);
-		    
-		    wordsleft.removeIf(x -> solver.nonconform(x));
-		    solver.empty();
-		    
+
 		    
 
 	    }
 	    return-1;
-
+	}
+	
+	public int narrow(String guess, String answer, ArrayList<String> allWords)
+	{
+		int ans = 0;
+		
+		Problem temp = new Problem(answer);
+		String inquiry = temp.inquire(guess);
+	    inputData(inquiry, guess);
+	    ArrayList<String> clone = (ArrayList<String>) allWords.clone();
+	    clone.removeIf(x -> nonconform(x));
+	    
+		empty();
+		return allWords.size()-clone.size();
+	}
+	
+	
+	
+	public int getDiff()
+	{
+		return 0;
+		
 	}
 	
 	public double getLeft(String guess, ArrayList<String> info)
@@ -163,7 +176,6 @@ public class Solver {
 	
 	public boolean nonconform(String x)
 	{
-		 
 		for (Integer jo: notHere.keySet())
 		{
 			if (x.charAt(jo)==(notHere.get(jo)))
@@ -187,7 +199,7 @@ public class Solver {
 		}
 		for (Character dooo: nowhere)
 		{
-			if (x.indexOf(dooo)!=-1)
+			if (x.indexOf(dooo)!=-1 && !spec.containsValue(dooo))
 			{
 				return true;
 			}

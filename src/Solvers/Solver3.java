@@ -1,3 +1,4 @@
+package Solvers;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,61 +15,9 @@ public class Solver3 {
 	public Problem problem = new Problem();
 	public String answer;
 
-	/*public static void main(String[] args) throws Exception
-	{
-		int[] answer = new int[12];
-		int count = 0;
-		int tot = 0;
-		int smalls = 0;
-		while (count<250)
-		{
-			System.out.println(count);
-			int d = go();
-			if (d!=-1)
-			{
-				if (d>11)
-				{
-					answer[11]++;
-				}
-				answer[d-1]++;
-				tot+=d;
-				count++;
-			}
-			else
-			{
-				smalls++;
-			}
-		}
-		
-		for (int x = 0; x<12; x++)
-		{
-			System.out.println(x + ": " + answer[x]);
-		}
-	}*/
-	public static void main(String[] args) throws Exception
-	{
-		int count = 0;
-		int tot = 0;
-		int smalls = 0;
-		int[] put = new int[15];
-		double total = 0;
-		double runs = 1;
-		
-		for (int x = 0; x<runs; x++)
-		{
-			System.out.println(runs-x);
-			int d = go();
-			total +=d;
-			put[d]++;
-		}
-		for (int x = 1; x<put.length; x++)
-		{
-			System.out.println(x + " " + put[x]);
-		}
-		System.out.println("Average of " + (double)total/runs + " guesses.");
-	}
 	
-	public static int go() throws Exception
+	
+	public int go() throws Exception
 	{
 		String answer = "";
 		
@@ -99,8 +48,6 @@ public class Solver3 {
 	    	line2 = reader2.readLine(); 
 	    }
 	    */
-	    Solver3 solver = new Solver3();
-	    solver.answer = solver.problem.getAnswer();
 	    boolean notDone = true;
 	    int totalCount = 0;
 	    while (notDone)
@@ -132,7 +79,7 @@ public class Solver3 {
 		    		count=0;
 		    		for (String words: wordsleft)
 		    		{
-		    			count += solver.full(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
+		    			count += full(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
 		    		}
 		    		
 		    		if (count>d)
@@ -161,7 +108,7 @@ public class Solver3 {
 	    	/*System.out.println("Best Guess " + guess);
 		    System.out.println("Answer " + solver.problem.getAnswer());
 		    */
-		    String response = solver.guess(guess);
+		    String response = guess(guess);
 		   // System.out.println("Reponse " + response);
 		    
 		   //
@@ -175,7 +122,7 @@ public class Solver3 {
 		    
 		    
 		    
-		    solver.inputData(response, guess);
+		    inputData(response, guess);
 		    //System.out.println("Size: " + wordsleft.size());
 		    /*if (wordsleft.size()<10)
 		    {
@@ -185,7 +132,7 @@ public class Solver3 {
 		    	}
 		    }*/
 		    
-		    wordsleft.removeIf(x -> solver.nonconform(x));
+		    wordsleft.removeIf(x -> nonconform(x));
 
 		    //System.out.println("Size: " + wordsleft.size());
 		    /* for (Character s: solver.nowhere)
@@ -204,7 +151,7 @@ public class Solver3 {
 		    {
 		    	System.out.println("nh "+ solver.notHere.get(s));
 		    }*/
-		    solver.empty();
+		    empty();
 			wordsleft.remove(guess);
 
 		    
