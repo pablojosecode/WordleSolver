@@ -22,7 +22,7 @@ public class Solver4 {
 	public Solver4(String jo)
 	{
 		problem = new Problem(jo);
-	}
+	} 
 
 	
 	public static void main(String[] args) throws Exception
