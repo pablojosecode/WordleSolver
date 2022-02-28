@@ -28,7 +28,7 @@ public class Solver4 {
 	public static void main(String[] args) throws Exception
 	{
 		int count = 0;
-		int tot = 0;
+		int tot = 0;  
 		int smalls = 0;
 		int[] put = new int[15];
 		double total = 0;
