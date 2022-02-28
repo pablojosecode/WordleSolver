@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class Problem {
 	
-	private String answer;
+	public String answer;
 	
 	public Problem()
 	{
@@ -23,6 +23,44 @@ public class Problem {
 	public Problem(String answer)
 	{
 		this.answer = answer;
+	}
+	public Problem (int index)
+	{
+		this.getAnAnswer(index);
+	}
+	
+	public String getAnAnswer(int index)
+	{
+		String randomWord="";
+		try{
+			
+			File file = new File("../WordleSolver/wordle-answers-alphabetical.txt");
+			InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
+			
+			
+			//File directory = new File("./");
+			// System.out.println(directory.getAbsolutePath());
+			
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		    String line = reader.readLine();
+		    List<String> words = new ArrayList<String>();
+		    while(line != null) {
+		        String[] wordsLine = line.split(" ");
+		        for(String word : wordsLine) {
+		            words.add(word);
+		        }
+		        line = reader.readLine();
+		    }
+
+		    Random rand = new Random(System.currentTimeMillis());
+		     randomWord = words.get(index);
+		     System.out.println("THIS SIZE IS " + words.size());
+		} catch (Exception e) {
+			System.out.println("ERROR");
+		    // Handle this
+		}
+		return randomWord;
+		
 	}
 	
 	public String getAnAnswer()

@@ -50,10 +50,10 @@ public class Solver2 {
 		int smalls = 0;
 		int[] put = new int[15];
 		int total = 0;
-		
-		for (int x = 0; x<2500; x++)
+		int runs = 1000;
+		for (int x = 0; x<runs; x++)
 		{
-			System.out.println(2500-x);
+			System.out.println(runs-x);
 			int d = go();
 			total +=d;
 			put[d]++;
@@ -62,7 +62,7 @@ public class Solver2 {
 		{
 			System.out.println(x + " " + put[x]);
 		}
-		System.out.println("Average of " + (double)total/2500 + " guesses.");
+		System.out.println("Average of " + (double)total/runs + " guesses.");
 	}
 	
 	public static int go() throws Exception

@@ -3,8 +3,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class Solver3 {
+public class Solver4 {
 	
 	public HashMap<Integer, Character> spec = new HashMap<Integer, Character>();
     public ArrayList<Character> nowhere = new ArrayList<Character>();
@@ -12,6 +13,16 @@ public class Solver3 {
     public HashMap<Integer, Character> notHere = new HashMap<>();
 	public Problem problem = new Problem();
 	public String answer;
+	
+	public Solver4()
+	{
+		
+	}
+	
+	public Solver4(String jo)
+	{
+		problem = new Problem(jo);
+	}
 
 	/*public static void main(String[] args) throws Exception
 	{
@@ -51,12 +62,18 @@ public class Solver3 {
 		int smalls = 0;
 		int[] put = new int[15];
 		double total = 0;
-		double runs = 1;
-		
-		for (int x = 0; x<runs; x++)
+		double runs = 1000;
+		Solver4 solver = new Solver4();
+		LinkedHashMap<String, Integer> corpus = new LinkedHashMap<>();
+	    
+		for (int x = 200; x<200+runs; x++)
 		{
+			solver.problem.answer = solver.problem.getAnAnswer(x);
+		    solver.answer = solver.problem.getAnswer();
+		    System.out.println("REEREE ANSWER IS " + solver.answer);
 			System.out.println(runs-x);
-			int d = go();
+			int d = solver.go();
+			corpus.put(solver.answer, d);
 			total +=d;
 			put[d]++;
 		}
@@ -64,10 +81,14 @@ public class Solver3 {
 		{
 			System.out.println(x + " " + put[x]);
 		}
+		for (String word: corpus.keySet())
+		{
+			System.out.println(word + ": " + corpus.get(word));
+		}
 		System.out.println("Average of " + (double)total/runs + " guesses.");
 	}
 	
-	public static int go() throws Exception
+	public int go() throws Exception
 	{
 		String answer = "";
 		
@@ -98,8 +119,7 @@ public class Solver3 {
 	    	line2 = reader2.readLine(); 
 	    }
 	    */
-	    Solver3 solver = new Solver3();
-	    solver.answer = solver.problem.getAnswer();
+	    
 	    boolean notDone = true;
 	    int totalCount = 0;
 	    while (notDone)
@@ -118,20 +138,22 @@ public class Solver3 {
 	    	}
 	    	double count = 0;
 	    	String guess = "doodo";
-	    	/*if (first)
+	    	if (first)
 	    	{
 	    		guess = "salet";
 	    		first = false;
-	    	}*/
-	    	//else
+	    	}
+	    	else
 	    	{
 	    		double d = -1;
 		    	for (String jo: wordsleft)
 		    	{
+		    		System.out.println("CURRENT LOOKY " + jo);
+
 		    		count=0;
 		    		for (String words: wordsleft)
 		    		{
-		    			count += solver.full(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
+		    			count += this.fuller(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
 		    		}
 		    		
 		    		if (count>d)
@@ -155,12 +177,12 @@ public class Solver3 {
 		    		}
 		    	}*/
 	    	}
-	    	//System.out.println("Guess " + guess);
-	    	
-	    	/*System.out.println("Best Guess " + guess);
-		    System.out.println("Answer " + solver.problem.getAnswer());
-		    */
-		    String response = solver.guess(guess);
+	    	System.out.println("Guess is  " + guess + "\n");
+	    	/*
+	    	System.out.println("Best Guess " + guess);
+		    System.out.println("Answer " + this.problem.getAnswer());*/
+		    
+		    String response = this.guess(guess);
 		   // System.out.println("Reponse " + response);
 		    
 		   //
@@ -174,7 +196,7 @@ public class Solver3 {
 		    
 		    
 		    
-		    solver.inputData(response, guess);
+		    this.inputData(response, guess);
 		    //System.out.println("Size: " + wordsleft.size());
 		    /*if (wordsleft.size()<10)
 		    {
@@ -184,7 +206,7 @@ public class Solver3 {
 		    	}
 		    }*/
 		    
-		    wordsleft.removeIf(x -> solver.nonconform(x));
+		    wordsleft.removeIf(x -> this.nonconform(x));
 
 		    //System.out.println("Size: " + wordsleft.size());
 		    /* for (Character s: solver.nowhere)
@@ -203,7 +225,7 @@ public class Solver3 {
 		    {
 		    	System.out.println("nh "+ solver.notHere.get(s));
 		    }*/
-		    solver.empty();
+		    this.empty();
 			wordsleft.remove(guess);
 
 		    
@@ -219,6 +241,159 @@ public class Solver3 {
 	    }*/
 
 	    
+	}
+	
+	public int go2(String answer, ArrayList<String> left) throws Exception
+	{
+		
+		boolean first = true;
+		
+		
+		//File directory = new File("./");
+		// System.out.println(directory.getAbsolutePath());
+
+	    ArrayList<String> wordsleft = (ArrayList<String>)left.clone();
+	   /* InputStream stream2= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-allowed-guesses.txt");
+
+	    BufferedReader reader2 = new BufferedReader(new InputStreamReader(stream2));
+
+	    String line2 = reader2.readLine();
+	    while (line2 != null) { 
+	    	wordsleft.add(line2); 
+	    	line2 = reader2.readLine(); 
+	    }
+	    */
+	    
+	    boolean notDone = true;
+	    int totalCount = 0;
+	    while (notDone)
+	    {
+	    	totalCount++;
+	    	if (wordsleft.size()==0)
+	    	{	
+	    		//System.out.println("SMALL " + answer);
+	    		return -1;
+	    	}
+	    	if (wordsleft.size()==1)
+	    	{
+	    		
+	    		String ans = wordsleft.get(0);
+	    		//System.out.println("ANSWER IS " + ans);
+	    		return totalCount;
+	    	}
+	    	double count = 0;
+	    	String guess = "doodo";
+	    	if (first)
+	    	{
+	    		guess = "salet";
+	    		first = false;
+	    	}
+	    	else
+	    	{
+	    		double d = -1;
+		    	for (String jo: wordsleft)
+		    	{
+		    		count=0;
+		    		for (int x = 0; x<wordsleft.size(); x++)
+				    {
+				    	String words = wordsleft.get(x);
+				    	count += this.full(jo, words, wordsleft); //get the average length minimized by jo for all remaining stuffs.
+				    }
+		    		
+		    		
+		    		if (count>d)
+		    		{
+		    			d = count;
+		    			guess = jo;
+		    		}
+		    	}
+		    	if (d==-1)
+		    	{
+		    		System.out.println("HEEYA " + count);
+		    	}
+	    		/*for (String possible: wordsleft)
+		    	{
+		    		double min = 100000000;
+		    		double now = solver.getLeft(possible, wordsleft);
+		    		if (min>now)
+		    		{
+		    			min = now;
+		    			guess = possible;
+		    		}
+		    	}*/
+	    	}
+	    	/*System.out.println("Guess " + guess);
+	    	
+	    	System.out.println("Best Guess " + guess);
+		    System.out.println("Answer " + this.problem.getAnswer());*/
+		    
+		    String response = this.guess(guess);
+		   // System.out.println("Reponse " + response);
+		    
+		   //
+		    
+		    
+		    
+		    if (response.equals("ggggg"))
+		    {
+		    	return totalCount;
+		    }
+		    
+		    
+		    
+		    this.inputData(response, guess);
+		    //System.out.println("Size: " + wordsleft.size());
+		    /*if (wordsleft.size()<10)
+		    {
+		    	for (String word: wordsleft)
+		    	{
+		    		System.out.println(word);
+		    	}
+		    }*/
+		    
+		    wordsleft.removeIf(x -> this.nonconform(x));
+
+		    //System.out.println("Size: " + wordsleft.size());
+		    /* for (Character s: solver.nowhere)
+		    {
+		    	System.out.println("no "+ s);
+		    }
+		    for (Character s: solver.somewhere)
+		    {
+		    	System.out.println("so "+ s);
+		    }
+		    for (int s: solver.spec.keySet())
+		    {
+		    	System.out.println("sp "+ solver.spec.get(s));
+		    }
+		    for (int s: solver.notHere.keySet())
+		    {
+		    	System.out.println("nh "+ solver.notHere.get(s));
+		    }*/
+		    this.empty();
+			wordsleft.remove(guess);
+
+		    
+
+	    }
+	    return-1;
+	    
+	   
+	   // System.out.println("HOHohoHOHOO\n\\n\\n\n\\n\n");
+	   // wordsleft.removeIf(x -> solver.nonconform(x));
+	    /*for (String jo: wordsleft) {
+	    	System.out.println(jo);
+	    }*/
+
+	    
+	}
+
+	
+	public double fuller(String guess, String answer, ArrayList<String> words) throws Exception
+	{
+		ArrayList<String> words2 = narrow2(guess, answer, words);
+		
+		return 100-(double)go2(answer, words2);
 	}
 	
 	public double full(String guess, String answer, ArrayList<String> allWords)
