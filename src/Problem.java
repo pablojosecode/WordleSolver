@@ -139,20 +139,7 @@ public class Problem {
 	public static List<Character>
     convertStringToCharList(String str)
     {
-  
-      // Create an empty List of character
-      List<Character> chars = str
-  
-      // Convert to String to IntStream
-      .chars()
-  
-      // Convert IntStream to Stream<Character>
-      .mapToObj(e -> (char)e)
-  
-      // Collect the elements as a List Of Characters
-      .collect(Collectors.toList());
-  
-      // return the List
+      List<Character> chars = str.chars().mapToObj(e -> (char)e).collect(Collectors.toList());
       return chars;
     }
 

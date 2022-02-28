@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -12,45 +13,54 @@ public class Solver {
     public HashMap<Integer, Character> notHere = new HashMap<>();
 	public Problem problem = new Problem();
 
-	public static void main(String[] args) throws Exception
+	/**
+	 * @param args unused
+	 * @throws Exception
+	 */
+	public static void main(String[] args)
 	{
 		int count = 0;
 		int tot = 0;
 		int smalls = 0;
-		for (int x = 0; x<20000; x++)
+		int[] put = new int[15];
+		double total = 0;
+		double runs = 1;
+		
+		for (int x = 0; x<runs; x++)
 		{
+			System.out.println(runs-x);
 			int d = go();
-			if (d!=-1)
-			{
-				tot+=d;
-				count++;
-			}
-			else
-			{
-				smalls++;
-			}
+			total +=d;
+			put[d]++;
 		}
-		System.out.println("Average of " + (double)tot/count + " tries with " + smalls + " smalls");
+		for (int x = 1; x<put.length; x++)
+		{
+			System.out.println(x + " " + put[x]);
+		}
+		System.out.println("Average of " + (double)total/runs + " guesses.");
 	}
-	public static int go() throws Exception
+	
+	public static int go()
 	{
 		String answer = "";
 		
 		boolean first = true;
 		InputStream stream= Thread.currentThread().getContextClassLoader().getResourceAsStream("wordle-answers-alphabetical.txt");
-		
-		
-		//File directory = new File("./");
-		// System.out.println(directory.getAbsolutePath());
-		
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
 	    ArrayList<String> wordsleft = new ArrayList<>();
-	    String line = reader.readLine();
-	    while (line != null) { 
-	    	wordsleft.add(line); 
-	    	line = reader.readLine(); 
-	    }
+	    String line;
+		try {
+			line = reader.readLine();
+			while (line != null) { 
+		    	wordsleft.add(line); 
+		    	line = reader.readLine(); 
+		    }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	    Solver solver = new Solver();
 	    boolean notDone = true;
 	    int totalCount = 0;
@@ -86,14 +96,6 @@ public class Solver {
 	    	
 		    String response = solver.guess(guess);
 		    
-		   //
-		    /* System.out.println("Guess " + guess);
-		    System.out.println("Best Guess " + guess);
-		    System.out.println("Answer " + solver.problem.getAnswer());
-		    System.out.println("Reponse " + response);
-		    System.out.println("Size: " + wordsleft.size());*/
-		    
-		    
 		    if (response.equals("ggggg"))
 		    {
 		    	return totalCount;
@@ -104,35 +106,12 @@ public class Solver {
 		    solver.inputData(response, guess);
 		    
 		    wordsleft.removeIf(x -> solver.nonconform(x));
-		   /* for (Character s: solver.nowhere)
-		    {
-		    	System.out.println("no "+ s);
-		    }
-		    for (Character s: solver.somewhere)
-		    {
-		    	System.out.println("so "+ s);
-		    }
-		    for (int s: solver.spec.keySet())
-		    {
-		    	System.out.println("sp "+ solver.spec.get(s));
-		    }
-		    for (int s: solver.notHere.keySet())
-		    {
-		    	System.out.println("nh "+ solver.notHere.get(s));
-		    }*/
 		    solver.empty();
 		    
 		    
 
 	    }
 	    return-1;
-	    
-	   
-	   // System.out.println("HOHohoHOHOO\n\\n\\n\n\\n\n");
-	   // wordsleft.removeIf(x -> solver.nonconform(x));
-	    /*for (String jo: wordsleft) {
-	    	System.out.println(jo);
-	    }*/
 
 	}
 	
@@ -184,11 +163,6 @@ public class Solver {
 	
 	public boolean nonconform(String x)
 	{
-		
-		 /* public HashMap<Integer, Character> spec = new HashMap<Integer, Character>();
-    public ArrayList<Character> nowhere = new ArrayList<Character>();
-    public ArrayList<Character> somewhere = new ArrayList<Character>();
-    public HashMap<Integer, Character> notHere = new HashMap<>();*/
 		 
 		for (Integer jo: notHere.keySet())
 		{

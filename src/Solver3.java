@@ -3,6 +3,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Solver3 {
 	
@@ -240,23 +241,53 @@ public class Solver3 {
 	public ArrayList<String>  narrow2(String guess, String answer, ArrayList<String> allWords)
 	{
 		int ans = 0;
-		
-		Problem temp = new Problem(answer);
-		String inquiry = temp.inquire(guess);
+		String inquiry = inquireHere(guess, answer);
 	    inputData(inquiry, guess);
 	    ArrayList<String> clone = (ArrayList<String>) allWords.clone();
 	    clone.removeIf(x -> nonconform(x));
 	    this.empty();
 	    return clone;
 	}
+	
+	public String inquireHere(String guess, String answer)
+	{
+			StringBuilder output = new StringBuilder();
+			ArrayList<Character> copy = (ArrayList<Character>) problem.convertStringToCharList(answer);
+
+			
+			LinkedHashMap<Character, String> guessQuality = new LinkedHashMap<>();
+
+			for (int a = 0; a<5; a++)
+			{
+				char now =guess.charAt(a);
+				if (a<copy.size() && now==copy.get(a))
+				{
+					output.append('g');
+					copy.set(a,' ');
+				}
+				else if (copy.contains(now) && guess.charAt(copy.indexOf(now))!=now)
+				{
+					
+					output.append('y');
+					copy.set(copy.indexOf(now),' ');
+				}
+				else
+				{
+					output.append('w');
+				}
+				
+			}
+			return output.toString();
+			
+		
+	}
+
 
 	
 	public int narrow(String guess, String answer, ArrayList<String> allWords)
 	{
-		int ans = 0;
 		
-		Problem temp = new Problem(answer);
-		String inquiry = temp.inquire(guess);
+		String inquiry = inquireHere(guess, answer);
 	    inputData(inquiry, guess);
 	    ArrayList<String> clone = (ArrayList<String>) allWords.clone();
 	    clone.removeIf(x -> nonconform(x));
@@ -264,7 +295,6 @@ public class Solver3 {
 		this.empty();
 		return allWords.size()-clone.size();
 	}
-	
 	
 	
 	public int getDiff()
